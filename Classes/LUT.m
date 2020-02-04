@@ -682,7 +682,7 @@
     size_t size = [used3DLUT size];
     size_t cubeDataSize = size * size * size * sizeof (float) * 4;
     float *cubeData = (float *) malloc (cubeDataSize);
-
+    double cubeAlpha = self.alpha;
     [used3DLUT LUTLoopWithBlock:^(size_t r, size_t g, size_t b) {
         LUTColor *transformedColor = [used3DLUT colorAtR:r g:g b:b];
 
@@ -691,7 +691,11 @@
         cubeData[offset]   = (float)transformedColor.red;
         cubeData[offset+1] = (float)transformedColor.green;
         cubeData[offset+2] = (float)transformedColor.blue;
-        cubeData[offset+3] = 1.0f;
+        if (cubeAlpha > 0) {
+            cubeData[offset+3] = cubeAlpha;
+        }else{
+            cubeData[offset+3] = 1.0f;
+        }
     }];
 
     NSData *data = [NSData dataWithBytesNoCopy:cubeData length:cubeDataSize freeWhenDone:YES];
